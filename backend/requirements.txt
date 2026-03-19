@@ -1,0 +1,7 @@
+fastapi==0.104.0
+uvicorn[standard]==0.25.0
+pydantic==2.7.0
+supabase==1.0.1
+python-dotenv==1.0.0
+Jinja2==3.1.4
+WeasyPrint==58.0
