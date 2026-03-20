@@ -18,13 +18,17 @@ def _apply_limits(value: Decimal, minimo: Decimal = Decimal("0")) -> Decimal:
 
 def _find_faixa(base_calculo: Decimal, faixas: List[IrFaixa]) -> Optional[IrFaixa]:
     # A tabela de faixas usa `limite_superior` como exclusivo.
+    # A última faixa tem `limite_superior = None` (sem limite máximo).
     for faixa in sorted(faixas, key=lambda f: f.limite_inferior):
-        if faixa.limite_inferior <= base_calculo < faixa.limite_superior:
-            return faixa
+        if faixa.limite_superior is None:
+            # Última faixa: aplica se base_calculo >= limite_inferior
+            if base_calculo >= faixa.limite_inferior:
+                return faixa
+        else:
+            # Faixas intermediárias: aplica se limite_inferior <= base_calculo < limite_superior
+            if faixa.limite_inferior <= base_calculo < faixa.limite_superior:
+                return faixa
 
-    # Se passar do último limite, retorna a última faixa.
-    if faixas:
-        return max(faixas, key=lambda f: f.limite_superior)
     return None
 
 

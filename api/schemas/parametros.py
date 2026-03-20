@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import date
 from decimal import Decimal
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, PositiveInt, condecimal
 
@@ -14,7 +14,7 @@ class IrFaixa(BaseModel):
     id: int
     ano_calendario: PositiveInt
     limite_inferior: Currency
-    limite_superior: Currency
+    limite_superior: Optional[Currency]  # NULL para a última faixa
     aliquota: Currency
     deducao: Currency
 
