@@ -28,14 +28,33 @@ def simular_calculo(entrada: CalculoInput) -> CalculoResultado:
 
     parametros = IrParametros(**parametros_dict)
 
-    if entrada.tipo_calculo == TipoCalculo.AJUSTE_ANUAL:
-        return calcular_ajuste_anual(entrada, parametros)
-    return calcular_retificacao(entrada, parametros)
+    try:
+        if entrada.tipo_calculo == TipoCalculo.AJUSTE_ANUAL:
+            return calcular_ajuste_anual(entrada, parametros)
+        return calcular_retificacao(entrada, parametros)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Erro ao calcular: {str(e)}",
+        )
 
 
 @router.post("", response_model=CalculoInDB, status_code=status.HTTP_201_CREATED)
 def criar_calculo(entrada: CalculoInput) -> CalculoInDB:
-    resultado = simular_calculo(entrada)
+    try:
+        resultado = simular_calculo(entrada)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Erro ao simular cálculo: {str(e)}",
+        )
 
     payload = {
         "processo": entrada.processo,

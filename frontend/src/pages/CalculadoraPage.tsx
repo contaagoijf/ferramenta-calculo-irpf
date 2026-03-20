@@ -67,10 +67,17 @@ export default function CalculadoraPage() {
   }, [calculoId]);
 
   function handleChange<K extends keyof CalculoInput>(key: K, value: string) {
-    setInput((prev) => ({
-      ...prev,
-      [key]: key === "processo" || key === "nome_autor" ? value : asNumber(value),
-    }));
+    if (key === "processo" || key === "nome_autor" || key === "tipo_declaracao") {
+      setInput((prev) => ({
+        ...prev,
+        [key]: value,
+      }));
+    } else {
+      setInput((prev) => ({
+        ...prev,
+        [key]: asNumber(value),
+      }));
+    }
   }
 
   function handleSubmit(event: React.FormEvent) {
@@ -84,7 +91,19 @@ export default function CalculadoraPage() {
         navigate("/resultado", { state: { input, resultado: res } });
       })
       .catch((err) => {
-        setError(err?.response?.data?.detail || "Falha ao simular cálculo.");
+        let errorMsg = "Falha ao simular cálculo.";
+        if (err?.response?.data?.detail) {
+          errorMsg = err.response.data.detail;
+        } else if (err?.response?.data?.errors) {
+          // Capturar erros de validação Pydantic
+          const errors = err.response.data.errors;
+          if (Array.isArray(errors)) {
+            errorMsg = errors.map((e: any) => `${e.loc?.join(".")}: ${e.msg}`).join("; ");
+          }
+        } else if (err?.response?.status === 422) {
+          errorMsg = "Erro de validação. Verifique os valores informados.";
+        }
+        setError(errorMsg);
       })
       .finally(() => setLoading(false));
   }
@@ -144,6 +163,7 @@ export default function CalculadoraPage() {
             <input
               type="number"
               min={0}
+              step="0.01"
               value={input.rendimentos_tributaveis}
               onChange={(ev) => handleChange("rendimentos_tributaveis", ev.target.value)}
             />
@@ -156,6 +176,7 @@ export default function CalculadoraPage() {
                 <input
                   type="number"
                   min={0}
+                  step="0.01"
                   value={input.deducoes_legais}
                   onChange={(ev) => handleChange("deducoes_legais", ev.target.value)}
                 />
@@ -165,6 +186,7 @@ export default function CalculadoraPage() {
                 <input
                   type="number"
                   min={0}
+                  step="0.01"
                   value={input.deducoes_incentivo}
                   onChange={(ev) => handleChange("deducoes_incentivo", ev.target.value)}
                 />
@@ -177,6 +199,7 @@ export default function CalculadoraPage() {
             <input
               type="number"
               min={0}
+              step="0.01"
               value={input.imposto_rra}
               onChange={(ev) => handleChange("imposto_rra", ev.target.value)}
             />
@@ -187,6 +210,7 @@ export default function CalculadoraPage() {
             <input
               type="number"
               min={0}
+              step="0.01"
               value={input.imposto_pago}
               onChange={(ev) => handleChange("imposto_pago", ev.target.value)}
             />
@@ -199,6 +223,7 @@ export default function CalculadoraPage() {
             <input
               type="number"
               min={0}
+              step="0.01"
               value={input.rend_somar}
               onChange={(ev) => handleChange("rend_somar", ev.target.value)}
             />
@@ -208,6 +233,7 @@ export default function CalculadoraPage() {
             <input
               type="number"
               min={0}
+              step="0.01"
               value={input.rend_sub}
               onChange={(ev) => handleChange("rend_sub", ev.target.value)}
             />
@@ -220,6 +246,7 @@ export default function CalculadoraPage() {
                 <input
                   type="number"
                   min={0}
+                  step="0.01"
                   value={input.ded_somar}
                   onChange={(ev) => handleChange("ded_somar", ev.target.value)}
                 />
@@ -229,6 +256,7 @@ export default function CalculadoraPage() {
                 <input
                   type="number"
                   min={0}
+                  step="0.01"
                   value={input.ded_sub}
                   onChange={(ev) => handleChange("ded_sub", ev.target.value)}
                 />
@@ -238,6 +266,7 @@ export default function CalculadoraPage() {
                 <input
                   type="number"
                   min={0}
+                  step="0.01"
                   value={input.incentivo_somar}
                   onChange={(ev) => handleChange("incentivo_somar", ev.target.value)}
                 />
@@ -247,6 +276,7 @@ export default function CalculadoraPage() {
                 <input
                   type="number"
                   min={0}
+                  step="0.01"
                   value={input.incentivo_sub}
                   onChange={(ev) => handleChange("incentivo_sub", ev.target.value)}
                 />
@@ -259,6 +289,7 @@ export default function CalculadoraPage() {
             <input
               type="number"
               min={0}
+              step="0.01"
               value={input.rra_somar}
               onChange={(ev) => handleChange("rra_somar", ev.target.value)}
             />
@@ -268,6 +299,7 @@ export default function CalculadoraPage() {
             <input
               type="number"
               min={0}
+              step="0.01"
               value={input.rra_sub}
               onChange={(ev) => handleChange("rra_sub", ev.target.value)}
             />
