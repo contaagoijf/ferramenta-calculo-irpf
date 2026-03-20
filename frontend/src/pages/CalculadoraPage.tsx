@@ -25,7 +25,8 @@ const DEFAULT_INPUT: CalculoInput = {
 };
 
 function asNumber(value: string | number) {
-  const num = Number(value);
+  const str = String(value).replace(',', '.');
+  const num = Number(str);
   return Number.isNaN(num) ? 0 : num;
 }
 
