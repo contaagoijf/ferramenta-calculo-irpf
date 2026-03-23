@@ -28,5 +28,5 @@ def create_app() -> FastAPI:
     return app
 
 
-app = create_app()</content>
+app = create_app()
 <parameter name="filePath">c:/Users/c4c/Documents/ferramenta-calculo-irpf/api/main.py
