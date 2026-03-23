@@ -14,12 +14,16 @@ def create_app() -> FastAPI:
         redoc_url=f"{settings.api_prefix}/redoc",
     )
 
+    # Configurar CORS com suporte a origens múltiplas
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials=True,
+        allow_origins=[
+            "*",  # Em produção, considere ser mais específico
+        ],
+        allow_credentials=False,
         allow_methods=["*"],
         allow_headers=["*"],
+        max_age=600,
     )
 
     app.include_router(calculos.router, prefix=settings.api_prefix)
