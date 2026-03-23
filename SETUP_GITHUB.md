@@ -42,36 +42,33 @@ Se pedir autenticação, use:
 2. Clique em "Add New" → "Project"
 3. Selecione o repositório `ferramenta-calculo-irpf`
 4. Configure:
-   - **Framework Preset**: Next.js (ou Other se usar Vite)
-   - **Root Directory**: `./frontend`
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-5. Adicione variáveis de ambiente (se necessário):
-   - `VITE_API_BASE_URL`: URL da sua API (ex: `https://seu-backend.com/api/v1`)
+   - **Framework Preset**: Other
+   - **Root Directory**: `./` (raiz do projeto)
+   - **Build Command**: Deixar em branco (Vercel detecta automaticamente)
+   - **Output Directory**: `frontend/dist`
+5. **Variáveis de ambiente** (IMPORTANTE):
+   - **NÃO configure** `VITE_API_BASE_URL` - deixe vazio para usar URLs relativas
+   - Configure as variáveis do backend:
+     - `SUPABASE_URL`: URL do seu projeto Supabase
+     - `SUPABASE_KEY`: Chave de acesso do Supabase
 6. Clique em "Deploy"
 
-### Passo 4: Deploy do backend (Supabase / Railway / Render)
+**Nota Importante**: O Vercel automaticamente roteia `/api/*` para o backend FastAPI e `/*` para o frontend React, ambos no mesmo domínio. URLs relativas `/api/v1` funcionam perfeitamente em produção.
 
-Para o backend FastAPI, você pode usar:
+### Passo 4: Após Deploy
 
-**Opção A: Supabase + Edge Functions**
-- Não suportado nativamente; use Railway ou Render
+Após o deploy ser concluído:
 
-**Opção B: Railway (recomendado)**
-1. Acesse https://railway.app
-2. Crie novo projeto
-3. Conecte seu GitHub
-4. Configure para rodar:
-   ```
-   pip install -r requirements.txt
-   uvicorn app.main:app --host 0.0.0.0 --port 8000
-   ```
+1. Acesse a URL gerada pelo Vercel (ex: `https://ferramenta-calculo-irpf.vercel.app`)
+2. A aplicação estará rodando com:
+   - Frontend React em Vite servido em `/`
+   - Backend FastAPI servido em `/api/v1/`
+3. Consulte a documentação interativa da API em `/api/v1/docs`
 
-**Opção C: Render**
-1. Acesse https://render.com
-2. Novo "Web Service"
-3. Conecte seu GitHub
-4. Configure `gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app`
+**Troubleshooting**:
+- Se receber erros de CORS, verifique se `VITE_API_BASE_URL` está vazio no Vercel
+- Se a API retornar 404, verifique se `SUPABASE_URL` e `SUPABASE_KEY` estão configuradas
+- Para preview deploys, a mesma configuração funciona automaticamente
 
 ## Estrutura esperada no GitHub
 

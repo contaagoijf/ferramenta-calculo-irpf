@@ -14,14 +14,24 @@ def create_app() -> FastAPI:
         redoc_url=f"{settings.api_prefix}/redoc",
     )
 
-    # Configurar CORS com suporte a origens múltiplas
+    # CORS configuration for development and production
+    # Development: localhost on various ports
+    # Production: Vercel domains
+    allowed_origins = [
+        # Development environments
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:5173",
+        # Production
+        "https://ferramenta-calculo-irpf.vercel.app",
+    ]
+    
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[
-            "*",  # Em produção, considere ser mais específico
-        ],
+        allow_origins=allowed_origins,
         allow_credentials=False,
-        allow_methods=["*"],
+        allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         allow_headers=["*"],
         max_age=600,
     )
