@@ -9,6 +9,7 @@ from fastapi.responses import StreamingResponse
 from app.repositories.calculo_repository import fetch_calculo_by_id, insert_calculo
 from app.repositories.parametros_repository import fetch_parametros
 from app.schemas.calculo import CalculoCreate, CalculoInput, CalculoInDB, CalculoResultado, TipoCalculo
+from app.schemas.parametros import IrParametros
 from app.services.calculo_service import calcular_ajuste_anual, calcular_retificacao
 from app.utils.pdf import render_relatorio_pdf
 
@@ -23,8 +24,6 @@ def simular_calculo(entrada: CalculoInput) -> CalculoResultado:
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Parâmetros de IR não encontrados para o ano informado.",
         )
-
-    from app.schemas.parametros import IrParametros
 
     parametros = IrParametros(**parametros_dict)
 

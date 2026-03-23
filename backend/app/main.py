@@ -16,20 +16,10 @@ def create_app() -> FastAPI:
 
     # CORS configuration for development and production
     # Development: localhost on various ports
-    # Production: Vercel domains
-    allowed_origins = [
-        # Development environments
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:5173",
-        # Production
-        "https://ferramenta-calculo-irpf.vercel.app",
-    ]
-    
+    # Production: Vercel domains and preview deploys
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=allowed_origins,
+        allow_origin_regex=r"https?://(localhost|127\.0\.0\.1|[\w-]+\.vercel\.app)(:\d+)?",
         allow_credentials=False,
         allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         allow_headers=["*"],
