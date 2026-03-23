@@ -4,20 +4,12 @@ from io import BytesIO
 from typing import Any, Dict
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-from weasyprint import HTML
 
+# WeasyPrint temporarily disabled on Windows (requires GTK libraries)
+# Install GTK or use: pip install weasyprint
 
 def render_relatorio_pdf(context: Dict[str, Any]) -> bytes:
-    """Renderiza um relatório em PDF a partir de um template HTML."""
-
-    env = Environment(
-        loader=FileSystemLoader("app/templates"),
-        autoescape=select_autoescape(["html", "xml"]),
+    """PDF generation temporarily unavailable (WeasyPrint requires GTK on Windows)."""
+    raise NotImplementedError(
+        "PDF generation is disabled. Install GTK for Windows or use an alternative PDF library."
     )
-    template = env.get_template("relatorio.html")
-    html_content = template.render(**context)
-
-    pdf_io = BytesIO()
-    HTML(string=html_content).write_pdf(target=pdf_io)
-    pdf_io.seek(0)
-    return pdf_io.read()

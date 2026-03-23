@@ -7,7 +7,7 @@ const DEFAULT_INPUT: CalculoInput = {
   processo: "",
   nome_autor: "",
   tipo_declaracao: "completa",
-  ano_calendario: new Date().getFullYear(),
+  ano_calendario: Math.min(new Date().getFullYear(), 2025),
   rendimentos_tributaveis: 0,
   deducoes_legais: 0,
   deducoes_incentivo: 0,

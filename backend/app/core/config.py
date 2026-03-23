@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from pydantic import BaseSettings, Field, validator
+from pydantic_settings import BaseSettings
+from pydantic import Field, validator
 
 
 class Settings(BaseSettings):

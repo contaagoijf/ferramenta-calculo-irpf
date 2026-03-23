@@ -8,6 +8,7 @@ from pydantic import BaseModel, PositiveInt, condecimal
 
 
 Currency = condecimal(max_digits=18, decimal_places=2)
+Aliquota = condecimal(max_digits=10, decimal_places=4)
 
 
 class IrFaixa(BaseModel):
@@ -15,7 +16,7 @@ class IrFaixa(BaseModel):
     ano_calendario: PositiveInt
     limite_inferior: Currency
     limite_superior: Optional[Currency]  # NULL para a última faixa
-    aliquota: Currency
+    aliquota: Aliquota
     deducao: Currency
 
 
