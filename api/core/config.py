@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     supabase_key: str = Field(..., env="SUPABASE_KEY")
 
     # FastAPI
-    api_prefix: str = "/api/v1"
+    api_prefix: str = "/v1"
 
     class Config:
         env_file = ".env"
