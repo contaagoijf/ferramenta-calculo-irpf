@@ -1,0 +1,6 @@
+[project]
+name = "ferramenta-calculo-irpf"
+version = "0.1.0"
+description = "Ferramenta de calculo IRPF"
+readme = "README.md"
+requires-python = "==3.12.*"
