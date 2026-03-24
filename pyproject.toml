@@ -9,7 +9,7 @@ dependencies = [
     "uvicorn[standard]",
     "pydantic",
     "pydantic-settings",
-    "supabase==1.0.1",
+    "supabase",
     "python-dotenv",
     "jinja2",
 ]
