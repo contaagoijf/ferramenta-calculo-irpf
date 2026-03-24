@@ -4,3 +4,12 @@ version = "0.1.0"
 description = "Ferramenta de calculo IRPF"
 readme = "README.md"
 requires-python = "~=3.12.0"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "pydantic",
+    "pydantic-settings",
+    "supabase==1.0.1",
+    "python-dotenv",
+    "jinja2",
+]

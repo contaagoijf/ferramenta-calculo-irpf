@@ -1,7 +1,7 @@
 fastapi
 uvicorn[standard]
 pydantic
+pydantic-settings
 supabase==1.0.1
 python-dotenv
 Jinja2
-WeasyPrint
