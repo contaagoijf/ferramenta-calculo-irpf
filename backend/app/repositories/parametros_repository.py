@@ -7,8 +7,14 @@ from postgrest.exceptions import APIError
 from app.core.supabase import get_supabase_client
 
 
+def _extract_single_row(data: Any) -> Optional[Dict[str, Any]]:
+    if isinstance(data, list):
+        return data[0] if data else None
+    return data
+
+
 def fetch_parametros(ano_calendario: int) -> Optional[Dict[str, Any]]:
-    """Retorna os parâmetros de IR (teto, início correção) juntamente com as faixas."""
+    """Retorna os parametros de IR juntamente com as faixas."""
     client = get_supabase_client()
 
     try:
@@ -23,6 +29,7 @@ def fetch_parametros(ano_calendario: int) -> Optional[Dict[str, Any]]:
         if getattr(exc, "code", None) == "PGRST116":
             return None
         raise
+
     parametros = parametros_res.data
     if not parametros:
         return None
@@ -39,35 +46,16 @@ def fetch_parametros(ano_calendario: int) -> Optional[Dict[str, Any]]:
     return parametros
 
 
-def upsert_parametros(parametros: Dict[str, Any]) -> Dict[str, Any]:
-    """Cria ou atualiza parâmetros para um ano calendário.
-
-    Observação: esta função faz "upsert" somente na tabela `ir_parametros`.
-    As faixas devem ser atualizadas separadamente.
-    """
+def upsert_parametros(parametros: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    """Cria ou atualiza parametros para um ano calendario."""
     client = get_supabase_client()
-    result = (
-        client.table("ir_parametros")
-        .upsert(parametros, on_conflict="ano_calendario")
-        .select("*")
-        .single()
-        .execute()
-    )
-    return result.data
+    result = client.table("ir_parametros").upsert(parametros, on_conflict="ano_calendario").execute()
+    return _extract_single_row(result.data)
 
 
 def upsert_faixas(ano_calendario: int, faixas: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     client = get_supabase_client()
-    # Supabase upsert requires unique keys; we assume `id` exists when updating.
-    # We'll upsert by composing the payload.
-    payload = []
-    for faixa in faixas:
-        payload.append({**faixa, "ano_calendario": ano_calendario})
+    payload = [{**faixa, "ano_calendario": ano_calendario} for faixa in faixas]
 
-    result = (
-        client.table("ir_faixas")
-        .upsert(payload, on_conflict="id")
-        .select("*")
-        .execute()
-    )
+    result = client.table("ir_faixas").upsert(payload, on_conflict="id").execute()
     return result.data or []
